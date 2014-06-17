@@ -26,6 +26,8 @@
         "floppy/_packer_config.cmd",
         "floppy/passwordchange.bat",
         "floppy/openssh.bat",
+        "floppy/InstallNet4.ps1",
+        "floppy/InstallChocolatey.ps1",
         "floppy/zz-start-sshd.cmd"
       ],
       "tools_upload_flavor": "windows",
@@ -79,7 +81,26 @@
       "execute_command": "{{.Vars}} cmd /c C:/Windows/Temp/script.bat",
       "scripts": [
         "script/vagrant.bat",
-        "script/cmtool.bat",
+        "script/cmtool.bat"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "shutdown /r /t 5 /f /d p:4:1 /c \"Packer Reboot\"",
+        "taskkill /im sshd.exe /f"
+      ]
+    },
+    {
+      "type": "shell",
+      "remote_path": "/tmp/script.bat",
+      "environment_vars": [
+        "CM={{user `cm`}}",
+        "CM_VERSION={{user `cm_version`}}"
+      ],
+      "execute_command": "{{.Vars}} cmd /c C:/Windows/Temp/script.bat",
+      "scripts": [
+        "script/chocolatey.bat",
         "script/vmtool.bat",
         "script/clean.bat",
         "script/ultradefrag.bat",
